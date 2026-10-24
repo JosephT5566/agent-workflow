@@ -6,21 +6,37 @@ This repository defines repeatable workflows, handoff contracts, and project-lev
 
 ## Workflow
 
-```text
-Idea / raw issue
-    ↓
-Claude: grill requirements + enhance context
-    ↓
-[UI changes only] 2–3 mockup options → human selects one
-    ↓
-Approved GitHub Issue (self-contained specification)
-    ↓
-Independent implementation session (Codex / Claude, separate worktree)
-    ↓
-Tests + independent review → PR
-    ↓
-Human merge decision / narrowly allowlisted docs-only automation
+```mermaid
+flowchart TD
+    A["Capture idea as raw GitHub Issue"] --> B["Claude + pstack: grill and enhance context"]
+    B --> C{"Context complete?"}
+    C -- "No" --> D["Ask questions and update Issue"]
+    D --> B
+    C -- "Yes" --> E{"UI changes?"}
+    E -- "Yes" --> F["Create 2-3 distinct mockups"]
+    F --> G["Human selects design"]
+    G --> H["Record design decision in Issue"]
+    E -- "No" --> I["Human reviews complete specification"]
+    H --> I
+    I --> J{"Approved?"}
+    J -- "Revise" --> B
+    J -- "Approved" --> K["Approved GitHub Issue: durable handoff"]
+    K --> L["Independent implementation session"]
+    L --> M["Isolated branch / worktree"]
+    M --> N["Tests + independent review"]
+    N --> O{"Checks and acceptance criteria pass?"}
+    O -- "No" --> M
+    O -- "Yes" --> P["Open PR with evidence"]
+    P --> Q{"Eligible for safe auto-merge?"}
+    Q -- "Yes, if configured" --> R["Protected merge with required checks"]
+    Q -- "No / critical path" --> S["Human PR approval"]
+    S --> R
+    R --> T["Update / close GitHub Issue"]
+
+    K -. "Separate approved issues can run in parallel" .-> L
 ```
+
+> **Current status:** This is the *target workflow*, not an automatically enforced state machine. Docs-only auto-merge is not enabled by this repository. Human approval and GitHub branch protections remain required where applicable.
 
 A new implementation session should be able to start from an **approved issue** without access to the planning conversation. GitHub Issues and PRs are the durable handoff; chat history is not.
 
