@@ -1,0 +1,17 @@
+# Copy to <project>/.agents/project.yaml and tailor for that repository.
+# This is human/agent-readable guidance, not an automatically executed schema.
+harness:
+  enabled: true
+workflow:
+  issue_first: true
+  require_approval_before_implementation: true
+  ui_mockup_required: true
+  independent_review: true
+implementation:
+  prefer_git_worktree: true
+  max_parallel_tasks: 2
+review:
+  docs_auto_merge: false  # not implemented; safety-first default
+validation:
+  # Add project-specific commands here; never assume all projects use npm.
+  commands: []
